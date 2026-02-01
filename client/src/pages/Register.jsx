@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios'; // Import axios directly if needed or use auth context
+import API_URL from '../config';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -59,7 +60,7 @@ const Register = () => {
             // Let's rely on context but we'll need to check if we can pass a second arg for content-type
             // OR we just directly call axios here to be safe and then login via context.
 
-            const res = await axios.post('http://localhost:3000/api/v1/auth/register', data, {
+            const res = await axios.post(`${API_URL}/api/v1/auth/register`, data, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 

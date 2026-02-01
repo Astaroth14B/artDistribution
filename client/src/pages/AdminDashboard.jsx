@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import API_URL from '../config';
 
 const AdminDashboard = () => {
     const { user } = useAuth();
@@ -24,7 +25,7 @@ const AdminDashboard = () => {
 
     const fetchStats = async () => {
         try {
-            const res = await axios.get('http://localhost:3000/api/v1/admin/stats', {
+            const res = await axios.get(`${API_URL}/api/v1/admin/stats`, {
                 headers: { 'x-auth-token': localStorage.getItem('token') }
             });
             setStats(res.data);
@@ -35,7 +36,7 @@ const AdminDashboard = () => {
 
     const fetchUsers = async () => {
         try {
-            const res = await axios.get('http://localhost:3000/api/v1/admin/users', {
+            const res = await axios.get(`${API_URL}/api/v1/admin/users`, {
                 headers: { 'x-auth-token': localStorage.getItem('token') }
             });
             setUsers(res.data);
@@ -46,7 +47,7 @@ const AdminDashboard = () => {
 
     const fetchArt = async () => {
         try {
-            const res = await axios.get('http://localhost:3000/api/v1/admin/art', {
+            const res = await axios.get(`${API_URL}/api/v1/admin/art`, {
                 headers: { 'x-auth-token': localStorage.getItem('token') }
             });
             setArts(res.data);
@@ -57,7 +58,7 @@ const AdminDashboard = () => {
 
     const fetchReviews = async () => {
         try {
-            const res = await axios.get('http://localhost:3000/api/v1/admin/reviews', {
+            const res = await axios.get(`${API_URL}/api/v1/admin/reviews`, {
                 headers: { 'x-auth-token': localStorage.getItem('token') }
             });
             setReviews(res.data);
@@ -72,7 +73,7 @@ const AdminDashboard = () => {
     const handleBan = async (e) => {
         e.preventDefault();
         try {
-            await axios.post(`http://localhost:3000/api/v1/admin/users/ban/${selectedUserForBan.id}`, banData, {
+            await axios.post(`${API_URL}/api/v1/admin/users/ban/${selectedUserForBan.id}`, banData, {
                 headers: { 'x-auth-token': localStorage.getItem('token') }
             });
             setSelectedUserForBan(null);
@@ -86,7 +87,7 @@ const AdminDashboard = () => {
     const handleUnban = async (userId) => {
         if (!window.confirm('RELEASE THIS ARTIST FROM TIMEOUT?')) return;
         try {
-            await axios.post(`http://localhost:3000/api/v1/admin/users/unban/${userId}`, {}, {
+            await axios.post(`${API_URL}/api/v1/admin/users/unban/${userId}`, {}, {
                 headers: { 'x-auth-token': localStorage.getItem('token') }
             });
             fetchUsers();
@@ -109,7 +110,7 @@ const AdminDashboard = () => {
     const deleteItem = async (type, id) => {
         if (!window.confirm(`WARNING: PERMANENT ${type.toUpperCase()} DELETION. EXECUTE?`)) return;
         try {
-            await axios.delete(`http://localhost:3000/api/v1/admin/${type}/${id}`, {
+            await axios.delete(`${API_URL}/api/v1/admin/${type}/${id}`, {
                 headers: { 'x-auth-token': localStorage.getItem('token') }
             });
             // Refresh
@@ -305,7 +306,7 @@ const AdminDashboard = () => {
                                         <tr
                                             key={a.id}
                                             style={{ borderBottom: '1px solid var(--parchment)' }}
-                                            onMouseEnter={() => setPreviewImage(`http://localhost:3000${a.imageUrl}`)}
+                                            onMouseEnter={() => setPreviewImage(`${API_URL}${a.imageUrl}`)}
                                             onMouseLeave={() => setPreviewImage(null)}
                                         >
                                             <td style={{ padding: '15px' }}>{a.id}</td>
@@ -315,7 +316,7 @@ const AdminDashboard = () => {
                                                 </Link>
                                             </td>
                                             <td style={{ padding: '15px' }}>
-                                                <img src={`http://localhost:3000${a.imageUrl}`} alt="art" style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--parchment)' }} />
+                                                <img src={`${API_URL}${a.imageUrl}`} alt="art" style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px', border: '1px solid var(--parchment)' }} />
                                             </td>
                                             <td style={{ padding: '15px', fontFamily: 'var(--font-alt)', fontSize: '1.2rem' }}>{a.title}</td>
                                             <td style={{ padding: '15px', textAlign: 'right' }}>

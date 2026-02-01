@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../config';
 
 const ArtistProfile = () => {
     const { serialNumber } = useParams();
@@ -14,11 +15,11 @@ const ArtistProfile = () => {
             setLoading(true);
             try {
                 // Fetch artist info
-                const artistRes = await axios.get(`http://localhost:3000/api/v1/auth/user/${serialNumber}`);
+                const artistRes = await axios.get(`${API_URL}/api/v1/auth/user/${serialNumber}`);
                 setArtist(artistRes.data);
 
                 // Fetch artist's art
-                const artRes = await axios.get(`http://localhost:3000/api/v1/art/user/${serialNumber}`);
+                const artRes = await axios.get(`${API_URL}/api/v1/art/user/${serialNumber}`);
                 setArtworks(artRes.data);
             } catch (err) {
                 console.error("Failed to fetch artist profile:", err);

@@ -295,9 +295,10 @@ router.get('/user/:serialNumber', async (req, res) => {
         val.reviewCount = reviewCount;
         val.totalArt = artworks.length;
 
+        const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
         if (val.profilePic && !val.profilePic.startsWith('http')) {
             const picPath = val.profilePic.startsWith('/') ? val.profilePic : `/${val.profilePic}`;
-            val.profilePic = `http://localhost:3000${picPath}`;
+            val.profilePic = `${baseUrl}${picPath}`;
         }
 
         res.json(val);

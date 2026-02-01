@@ -36,14 +36,16 @@ router.get('/', async (req, res) => {
             order: [['createdAt', 'DESC']]
         });
 
+        const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
         const artWithUrls = art.map(item => {
             const val = item.get({ plain: true });
             if (val.imageUrl && !val.imageUrl.startsWith('http')) {
-                val.imageUrl = `http://localhost:3000/uploads/${val.imageUrl}`;
+                const imgPath = val.imageUrl.startsWith('/') ? val.imageUrl : `/uploads/${val.imageUrl}`;
+                val.imageUrl = `${baseUrl}${imgPath}`;
             }
             if (val.uploader && val.uploader.profilePic && !val.uploader.profilePic.startsWith('http')) {
                 const picPath = val.uploader.profilePic.startsWith('/') ? val.uploader.profilePic : `/${val.uploader.profilePic}`;
-                val.uploader.profilePic = `http://localhost:3000${picPath}`;
+                val.uploader.profilePic = `${baseUrl}${picPath}`;
             }
             return val;
         });
@@ -97,10 +99,12 @@ router.get('/my-uploads', auth, async (req, res) => {
             where: { userSerial: user.serialNumber }
         });
 
+        const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
         const artWithUrls = art.map(item => {
             const val = item.get({ plain: true });
             if (val.imageUrl && !val.imageUrl.startsWith('http')) {
-                val.imageUrl = `http://localhost:3000/uploads/${val.imageUrl}`;
+                const imgPath = val.imageUrl.startsWith('/') ? val.imageUrl : `/uploads/${val.imageUrl}`;
+                val.imageUrl = `${baseUrl}${imgPath}`;
             }
             return val;
         });
@@ -124,14 +128,16 @@ router.get('/user/:serialNumber', async (req, res) => {
             order: [['createdAt', 'DESC']]
         });
 
+        const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
         const artWithUrls = art.map(item => {
             const val = item.get({ plain: true });
             if (val.imageUrl && !val.imageUrl.startsWith('http')) {
-                val.imageUrl = `http://localhost:3000/uploads/${val.imageUrl}`;
+                const imgPath = val.imageUrl.startsWith('/') ? val.imageUrl : `/uploads/${val.imageUrl}`;
+                val.imageUrl = `${baseUrl}${imgPath}`;
             }
             if (val.uploader && val.uploader.profilePic && !val.uploader.profilePic.startsWith('http')) {
                 const picPath = val.uploader.profilePic.startsWith('/') ? val.uploader.profilePic : `/${val.uploader.profilePic}`;
-                val.uploader.profilePic = `http://localhost:3000${picPath}`;
+                val.uploader.profilePic = `${baseUrl}${picPath}`;
             }
             return val;
         });

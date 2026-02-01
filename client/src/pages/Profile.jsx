@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import API_URL from '../config';
 
 const Profile = () => {
     const { user, setUser } = useAuth();
@@ -16,7 +17,7 @@ const Profile = () => {
     const fetchMyArt = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get('http://localhost:3000/api/v1/art/my-uploads', {
+            const res = await axios.get(`${API_URL}/api/v1/art/my-uploads`, {
                 headers: { 'x-auth-token': token }
             });
             if (Array.isArray(res.data)) {
@@ -51,7 +52,7 @@ const Profile = () => {
         e.preventDefault();
         setStatus('SAVING...');
         try {
-            const res = await axios.put('http://localhost:3000/api/v1/auth/profile', formData);
+            const res = await axios.put(`${API_URL}/api/v1/auth/profile`, formData);
             // Update the user in context if AuthContext provides setUser
             if (typeof setUser === 'function') {
                 setUser(res.data.user);
@@ -84,7 +85,7 @@ const Profile = () => {
                 }}>
                     <div className="profile-pic">
                         <img
-                            src={user.profilePic ? `http://localhost:3000${user.profilePic}` : 'https://via.placeholder.com/150'}
+                            src={user.profilePic ? (user.profilePic.startsWith('http') ? user.profilePic : `${API_URL}${user.profilePic}`) : 'https://via.placeholder.com/150'}
                             alt={user.username}
                             style={{
                                 width: '150px',

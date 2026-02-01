@@ -4,7 +4,8 @@ const sequelize = require('./config/database');
 async function diag() {
     console.log('--- SERVER HEALTH CHECK ---');
     try {
-        const HealthRes = await axios.get('http://localhost:3000/api/v1/health');
+        const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+        const HealthRes = await axios.get(`${baseUrl}/api/v1/health`);
         console.log('Health response:', HealthRes.data);
     } catch (err) {
         console.log('Health check failed:', err.message);

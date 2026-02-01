@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useUI } from '../context/UIContext';
 import { useAuth } from '../context/AuthContext';
+import API_URL from '../config';
 
 const Navbar = () => {
     const location = useLocation();
@@ -103,7 +104,7 @@ const Navbar = () => {
                                     onClick={toggleDropdown}
                                 >
                                     <img
-                                        src={user.profilePic ? `http://localhost:3000${user.profilePic}` : 'https://via.placeholder.com/30'}
+                                        src={user.profilePic ? (user.profilePic.startsWith('http') ? user.profilePic : `${API_URL}${user.profilePic}`) : 'https://via.placeholder.com/30'}
                                         alt="profile"
                                         style={{ width: '35px', height: '35px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--accent-gold)', display: 'block' }}
                                     />

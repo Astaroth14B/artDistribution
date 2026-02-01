@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import API_URL from '../config';
 
 const Gallery = () => {
     const { user } = useAuth();
@@ -46,7 +47,7 @@ const Gallery = () => {
         else setLoadingMore(true);
 
         try {
-            const res = await axios.get(`http://localhost:3000/api/v1/art?page=${pageNumber}&limit=12`);
+            const res = await axios.get(`${API_URL}/api/v1/art?page=${pageNumber}&limit=12`);
             console.log("Gallery: Received API response", res.data);
 
             let newItems = [];
@@ -90,7 +91,7 @@ const Gallery = () => {
     const fetchReviews = async (artId) => {
         if (!artId) return;
         try {
-            const res = await axios.get(`http://localhost:3000/api/v1/reviews/${artId}`);
+            const res = await axios.get(`${API_URL}/api/v1/reviews/${artId}`);
             setReviews(Array.isArray(res.data) ? res.data : []);
         } catch (err) {
             console.error("Gallery: Failed to fetch reviews", err);
@@ -114,7 +115,7 @@ const Gallery = () => {
 
         setIsSubmitting(true);
         try {
-            await axios.post(`http://localhost:3000/api/v1/reviews/${selectedImg.id}`, {
+            await axios.post(`${API_URL}/api/v1/reviews/${selectedImg.id}`, {
                 content: reviewContent,
                 rating
             }, {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useUI } from '../context/UIContext';
 import { useAuth } from '../context/AuthContext';
+import API_URL from '../config';
 
 const UploadModal = ({ onUploadSuccess }) => {
     const { isUploadModalOpen, closeUploadModal } = useUI();
@@ -32,7 +33,7 @@ const UploadModal = ({ onUploadSuccess }) => {
 
         try {
             const token = localStorage.getItem('token');
-            await axios.post('http://localhost:3000/api/v1/art/upload', data, {
+            await axios.post(`${API_URL}/api/v1/art/upload`, data, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'x-auth-token': token

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useUI } from '../context/UIContext';
+import API_URL from '../config';
 
 const AuthModal = () => {
     const { isAuthModalOpen, authView, closeAuthModal, setAuthView } = useUI();
@@ -67,7 +68,7 @@ const AuthModal = () => {
         if (registerData.profilePic) data.append('profilePic', registerData.profilePic);
 
         try {
-            const res = await axios.post('http://localhost:3000/api/v1/auth/register', data, {
+            const res = await axios.post(`${API_URL}/api/v1/auth/register`, data, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             // Move to verification step
@@ -84,7 +85,7 @@ const AuthModal = () => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            await axios.post('http://localhost:3000/api/v1/auth/verify-email', {
+            await axios.post(`${API_URL}/api/v1/auth/verify-email`, {
                 username: registerData.username,
                 code: verificationCode
             });
