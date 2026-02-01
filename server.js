@@ -5,12 +5,29 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors());
-app.use(express.json());
+// Allow configuring allowed origins via environment variable (comma-separated), fallback to wildcard
+const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['*'];
+app.use(cors({
+    origin: function(origin, callback) {
+        // allow non-browser tools (no origin) and allowed origins
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) return callback(null, true);
+        return callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true
+}));
+
+// Fallback to ensure CORS headers are always present (useful if some upstream proxy strips them)
 app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', allowedOrigins.includes('*') ? '*' : req.get('origin'));
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    if (req.method === 'OPTIONS') return res.sendStatus(200);
     console.log(`${req.method} ${req.url}`);
     next();
 });
+
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -27,6 +44,14 @@ app.use('/api/v1/auth', require('./routes/authRoutes'));
 app.use('/api/v1/admin', require('./routes/adminRoutes'));
 
 app.get('/api/v1/health', (req, res) => res.json({ status: 'active', version: 'paginated-masonry-v1' }));
+
+// Ensure even 404 responses include CORS headers for browser clients
+app.use((req, res) => {
+    res.header('Access-Control-Allow-Origin', allowedOrigins.includes('*') ? '*' : req.get('origin'));
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.status(404).json({ msg: 'Not Found' });
+});
 
 // Sync Database & Start Server
 sequelize.sync()
