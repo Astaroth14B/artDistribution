@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'client', 'dist')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database Connection (MySQL / Sequelize)
@@ -44,6 +44,12 @@ app.use('/api/v1/auth', require('./routes/authRoutes'));
 app.use('/api/v1/admin', require('./routes/adminRoutes'));
 
 app.get('/api/v1/health', (req, res) => res.json({ status: 'active', version: 'paginated-masonry-v1' }));
+
+// Serve React build for non-API routes (single-page app)
+app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+});
 
 // Ensure even 404 responses include CORS headers for browser clients
 app.use((req, res) => {
