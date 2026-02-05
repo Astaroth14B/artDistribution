@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 // Allow configuring allowed origins via environment variable (comma-separated), fallback to wildcard
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['*'];
 app.use(cors({
-    origin: function(origin, callback) {
+    origin: function (origin, callback) {
         // allow non-browser tools (no origin) and allowed origins
         if (!origin) return callback(null, true);
         if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) return callback(null, true);
@@ -18,14 +18,8 @@ app.use(cors({
 }));
 
 // Fallback to ensure CORS headers are always present (useful if some upstream proxy strips them)
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', allowedOrigins.includes('*') ? '*' : req.get('origin'));
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    if (req.method === 'OPTIONS') return res.sendStatus(200);
-    console.log(`${req.method} ${req.url}`);
-    next();
-});
+// Manual CORS headers removed to prevent conflict with 'cors' package.
+// The 'cors' middleware above handles this correctly with credentials.
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'client', 'dist')));
