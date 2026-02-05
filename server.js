@@ -1,8 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Ensure uploads directory exists
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+}
 
 // Middleware
 // Allow configuring allowed origins via environment variable (comma-separated), fallback to wildcard
