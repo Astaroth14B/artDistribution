@@ -55,6 +55,12 @@ button {
     box-sizing: border-box;
 }
 
+@media (max-width: 768px) {
+    .header {
+        padding: 0 15px;
+    }
+}
+
 .site-logo .name {
     font-family: var(--font-header);
     font-size: 1.6rem;
@@ -80,6 +86,15 @@ button {
     letter-spacing: 1px;
     padding: 10px 0;
     border-bottom: 2px solid transparent;
+}
+
+@media (max-width: 600px) {
+
+    .nav-bar a,
+    .nav-bar .press {
+        margin-left: 10px;
+        font-size: 0.7rem;
+    }
 }
 
 .nav-bar a:hover,
@@ -344,6 +359,15 @@ button {
     border: 1px solid var(--accent-gold);
 }
 
+@media (max-width: 992px) {
+    .modalContent.split-view {
+        flex-direction: column;
+        max-height: 95vh;
+        width: 100%;
+        border-radius: 0;
+    }
+}
+
 .modal-left {
     flex: 1.5;
     background: #000;
@@ -366,6 +390,12 @@ button {
     flex-direction: column;
     overflow-y: auto;
     background: var(--bg-parchment);
+}
+
+@media (max-width: 768px) {
+    .modal-right {
+        padding: 20px;
+    }
 }
 
 .uploader-header {
@@ -518,6 +548,13 @@ button {
     font-size: 3rem;
     margin: 40px 0;
     color: var(--text-sepia);
+}
+
+@media (max-width: 768px) {
+    .section-title {
+        font-size: 2rem;
+        margin: 25px 0;
+    }
 }
 
 .gallery-full-grid {

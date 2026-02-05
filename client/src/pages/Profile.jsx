@@ -72,32 +72,15 @@ const Profile = () => {
     return (
         <div className="page-content">
             <div className="container" style={{ paddingTop: '100px' }}>
-                <div className="profile-header" style={{
-                    display: 'flex',
-                    flexDirection: window.innerWidth < 768 ? 'column' : 'row',
-                    alignItems: 'center',
-                    gap: '40px',
-                    background: 'rgba(255,255,255,0.85)',
-                    padding: '40px',
-                    border: '1px solid var(--accent-gold)',
-                    boxShadow: '0 5px 25px rgba(0,0,0,0.05)',
-                    borderRadius: '8px'
-                }}>
+                <div className="profile-header-container">
                     <div className="profile-pic">
                         <img
-                            src={user.profilePic ? (user.profilePic.startsWith('http') ? user.profilePic : `${API_URL}${user.profilePic}`) : 'https://via.placeholder.com/150'}
+                            src={user.profilePic ? (user.profilePic.startsWith('http') ? user.profilePic : `${API_URL}${user.profilePic}`) : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23c5a059'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E"}
                             alt={user.username}
-                            style={{
-                                width: '150px',
-                                height: '150px',
-                                borderRadius: '50%',
-                                objectFit: 'cover',
-                                border: '4px solid var(--accent-gold)',
-                                boxShadow: '0 0 20px rgba(184, 134, 11, 0.2)'
-                            }}
+                            className="profile-img-circle"
                         />
                     </div>
-                    <div className="profile-info" style={{ flex: 1, width: '100%', color: 'var(--text-sepia)' }}>
+                    <div className="profile-info-content">
                         {isEditing ? (
                             <form onSubmit={handleUpdate} className="cyber-form" style={{ padding: 0, border: 'none', background: 'transparent', boxShadow: 'none' }}>
                                 <div className="sec">
@@ -119,18 +102,8 @@ const Profile = () => {
                             </form>
                         ) : (
                             <>
-                                <h2 style={{ fontSize: '3em', margin: 0, fontFamily: 'var(--font-header)', color: 'var(--accent-gold)' }}>{user.username}</h2>
-                                <p className="serial-id-label" style={{
-                                    color: 'var(--text-sepia)',
-                                    fontSize: '1em',
-                                    fontFamily: 'monospace',
-                                    marginTop: '10px',
-                                    background: 'var(--accent-gold-glow)',
-                                    display: 'inline-block',
-                                    padding: '5px 15px',
-                                    border: '1px solid var(--accent-gold)',
-                                    borderRadius: '4px'
-                                }}>
+                                <h2 className="profile-username">{user.username}</h2>
+                                <p className="serial-id-badge">
                                     SERIAL ID: {user.serialNumber || '000000000000'}
                                 </p>
                                 <p style={{ color: 'var(--text-dim)', fontSize: '1.2em', marginTop: '15px', fontFamily: 'var(--font-alt)' }}>{user.email}</p>
@@ -170,6 +143,67 @@ const Profile = () => {
                     margin: 0 auto;
                     padding: 0 20px;
                 }
+                .profile-header-container {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 40px;
+                    background: rgba(255,255,255,0.85);
+                    padding: 40px;
+                    border: 1px solid var(--accent-gold);
+                    box-shadow: 0 5px 25px rgba(0,0,0,0.05);
+                    borderRadius: 8px;
+                }
+                .profile-img-circle {
+                    width: 150px;
+                    height: 150px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    border: 4px solid var(--accent-gold);
+                    box-shadow: 0 0 20px rgba(184, 134, 11, 0.2);
+                }
+                .profile-info-content {
+                    flex: 1;
+                    width: 100%;
+                    color: var(--text-sepia);
+                }
+                .profile-username {
+                    font-size: 3em;
+                    margin: 0;
+                    font-family: var(--font-header);
+                    color: var(--accent-gold);
+                }
+                .serial-id-badge {
+                    color: var(--text-sepia);
+                    font-size: 1em;
+                    font-family: monospace;
+                    margin-top: 10px;
+                    background: var(--accent-gold-glow);
+                    display: inline-block;
+                    padding: 5px 15px;
+                    border: 1px solid var(--accent-gold);
+                    border-radius: 4px;
+                }
+
+                @media (max-width: 768px) {
+                    .profile-header-container {
+                        flex-direction: column;
+                        padding: 30px 20px;
+                        gap: 20px;
+                        text-align: center;
+                    }
+                    .profile-username {
+                        font-size: 2rem;
+                    }
+                    .profile-img-circle {
+                        width: 120px;
+                        height: 120px;
+                    }
+                    .serial-id-badge {
+                        font-size: 0.8rem;
+                    }
+                }
+
             `}</style>
         </div>
     );
