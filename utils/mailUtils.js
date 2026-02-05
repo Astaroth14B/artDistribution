@@ -4,6 +4,14 @@ const nodemailer = require('nodemailer');
 // For development, we'll use a local Ethereal account if possible, 
 // or just log to console if no SMTP is provided.
 // Configure the transporter
+// Debug Logging for Email Config
+console.log('📧 Email Config:', {
+    host: process.env.EMAIL_HOST || 'smtp.ethereal.email',
+    port: process.env.EMAIL_PORT || 587,
+    user: process.env.EMAIL_USER || 'jess.satterfield21@ethereal.email',
+    secure: process.env.EMAIL_PORT == 465
+});
+
 const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST || 'smtp.ethereal.email',
     port: process.env.EMAIL_PORT || 587,
@@ -12,8 +20,8 @@ const transporter = nodemailer.createTransport({
         user: process.env.EMAIL_USER || 'jess.satterfield21@ethereal.email',
         pass: process.env.EMAIL_PASS || '6m2fUK6C1B6dCcN9S7'
     },
-    connectionTimeout: 10000, // 10 seconds timeout (Gmail handshake is slow)
-    greetingTimeout: 10000 // 10 seconds timeout
+    connectionTimeout: 10000,
+    greetingTimeout: 10000
 });
 
 /**
