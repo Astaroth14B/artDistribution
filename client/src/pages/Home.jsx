@@ -1,44 +1,56 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useUI } from '../context/UIContext';
+import './Home.css';
 
 const Home = () => {
     const { openUploadModal } = useUI();
 
     return (
-        <section className="background">
-            {/* Animated Pages */}
-            <div className="book-container">
-                <div className="book-page"></div>
-                <div className="book-page"></div>
-                <div className="book-page"></div>
-                <div className="book-page"></div>
+        <section className="pinterest-hero">
+            {/* Floating masonry images */}
+            {/* Floating masonry images */}
+            <div className="masonry-container">
+                <div className="masonry-column col-1">
+                    {[1, 2, 3, 4, 1, 2, 3, 4].map((n, i) => (
+                        <div key={i} className={`pin item-${n}`}></div>
+                    ))}
+                </div>
+                <div className="masonry-column col-2">
+                    {[5, 6, 7, 8, 5, 6, 7, 8].map((n, i) => (
+                        <div key={i} className={`pin item-${n}`}></div>
+                    ))}
+                </div>
+                <div className="masonry-column col-3">
+                    {[9, 10, 11, 12, 9, 10, 11, 12].map((n, i) => (
+                        <div key={i} className={`pin item-${n}`}></div>
+                    ))}
+                </div>
+                <div className="masonry-column col-4">
+                    {[13, 14, 15, 16, 13, 14, 15, 16].map((n, i) => (
+                        <div key={i} className={`pin item-${n}`}></div>
+                    ))}
+                </div>
+                <div className="masonry-column col-5">
+                    {[17, 18, 19, 20, 17, 18, 19, 20].map((n, i) => (
+                        <div key={i} className={`pin item-${n}`}></div>
+                    ))}
+                </div>
             </div>
 
-            {/* Central Content */}
-            <div className="hero-overlay">
-                <div className="welcome-text" style={{ textAlign: 'center', maxWidth: '800px' }}>
-                    <h2 style={{ fontSize: '5rem', marginBottom: '10px' }}>
-                        ARTIST'S <span className="highlight">CAVE</span>
-                    </h2>
-                    <p className="subtitle" style={{ fontSize: '1.8rem' }}>
-                        You draw, we share.
-                    </p>
-                    <div className="buttons" style={{ justifyContent: 'center', marginTop: '40px' }}>
-                        <Link to="/gallery" className="cyber-btn">ENTER THE CAVE</Link>
-                        <div
-                            className="cyber-btn"
-                            onClick={openUploadModal}
-                            style={{
-                                background: 'var(--accent-gold)',
-                                borderColor: 'var(--accent-gold)',
-                                cursor: 'pointer',
-                                color: '#fff'
-                            }}
-                        >
-                            CONTRIBUTE ART
-                        </div>
-                    </div>
+            {/* Center headline */}
+            <div className="hero-center">
+                <h1>
+                    Get your next <br />
+                    <span>art inspiration</span>
+                </h1>
+                <p>You draw, we share.</p>
+
+                <div className="hero-actions">
+                    <Link to="/gallery" className="primary-btn">Explore Gallery</Link>
+                    <button onClick={openUploadModal} className="secondary-btn">
+                        Upload Art
+                    </button>
                 </div>
             </div>
         </section>
