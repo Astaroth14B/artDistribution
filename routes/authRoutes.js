@@ -74,10 +74,13 @@ router.post('/register', upload.single('profilePic'), async (req, res) => {
         const emailSent = await sendVerificationEmail(email, verificationCode);
 
         if (!emailSent) {
-            // WARN: Email failed (likely missing Railway env vars) but account IS created.
-            // Return 200 so they can at least know they registered.
+            // Auto-verify if email service is down/blocked
+            user.isVerified = true;
+            user.verificationCode = null;
+            await user.save();
+
             return res.status(200).json({
-                msg: 'Account created! However, the verification owl got lost (Email failed). Please contact an Admin or try logging in.'
+                msg: 'Account created! The verification owl got lost, so we have auto-verified your account. You may login.'
             });
         }
 
