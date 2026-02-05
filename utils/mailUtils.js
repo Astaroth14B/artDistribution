@@ -11,7 +11,9 @@ const transporter = nodemailer.createTransport({
     auth: {
         user: process.env.EMAIL_USER || 'jess.satterfield21@ethereal.email',
         pass: process.env.EMAIL_PASS || '6m2fUK6C1B6dCcN9S7'
-    }
+    },
+    connectionTimeout: 3000, // 3 seconds timeout
+    greetingTimeout: 3000 // 3 seconds timeout
 });
 
 /**
