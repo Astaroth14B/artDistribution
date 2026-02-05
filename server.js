@@ -6,15 +6,29 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 // Allow configuring allowed origins via environment variable (comma-separated), fallback to wildcard
-const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['*'];
+const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
+
 app.use(cors({
     origin: function (origin, callback) {
-        // allow non-browser tools (no origin) and allowed origins
+        // allow non-browser tools (no origin)
         if (!origin) return callback(null, true);
-        if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) return callback(null, true);
+
+        // Allow localhost (dev)
+        if (origin.includes('localhost') || origin.includes('127.0.0.1')) return callback(null, true);
+
+        // Allow Vercel & Railway subdomains (dynamic previews/production)
+        if (origin.endsWith('.vercel.app') || origin.endsWith('.railway.app')) return callback(null, true);
+
+        // Allow explicit specific domains
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+
+        // Optional: Block others but log for debugging
+        console.log('Blocked by CORS:', origin);
         return callback(new Error('Not allowed by CORS'));
     },
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 }));
 
 // Fallback to ensure CORS headers are always present (useful if some upstream proxy strips them)
