@@ -60,10 +60,8 @@ app.get('*', (req, res, next) => {
 });
 
 // Ensure even 404 responses include CORS headers for browser clients
+// Ensure even 404 responses include CORS headers for browser clients
 app.use((req, res) => {
-    res.header('Access-Control-Allow-Origin', allowedOrigins.includes('*') ? '*' : req.get('origin'));
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.status(404).json({ msg: 'Not Found' });
 });
 

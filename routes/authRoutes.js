@@ -74,11 +74,10 @@ router.post('/register', upload.single('profilePic'), async (req, res) => {
         const emailSent = await sendVerificationEmail(email, verificationCode);
 
         if (!emailSent) {
-            // Optional: delete user if email fails, or just warn. 
-            // Better to keep user but warn them to resend.
-            return res.status(500).json({
-                msg: 'Account created, but we could not send the verification seal. Please try "Resend Code" or check your carrier.',
-                userId: user.id
+            // WARN: Email failed (likely missing Railway env vars) but account IS created.
+            // Return 200 so they can at least know they registered.
+            return res.status(200).json({
+                msg: 'Account created! However, the verification owl got lost (Email failed). Please contact an Admin or try logging in.'
             });
         }
 
