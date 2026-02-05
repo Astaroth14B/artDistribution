@@ -74,13 +74,11 @@ router.post('/register', upload.single('profilePic'), async (req, res) => {
         const emailSent = await sendVerificationEmail(email, verificationCode);
 
         if (!emailSent) {
-            // Auto-verify if email service is down/blocked
-            user.isVerified = true;
-            user.verificationCode = null;
-            await user.save();
-
+            // WARN: Email failed (likely blocked) but account IS created.
+            // Return 200 so they can at least know they registered.
+            // Admin must manually tell them the code.
             return res.status(200).json({
-                msg: 'Account created! The verification owl got lost, so we have auto-verified your account. You may login.'
+                msg: 'Account created! However, the verification owl got lost (Email failed). Please contact the High Architect (Admin) for your code.'
             });
         }
 
