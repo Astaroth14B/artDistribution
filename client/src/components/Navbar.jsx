@@ -9,7 +9,9 @@ const Navbar = () => {
     const { openReviewModal, openUploadModal, openAuthModal } = useUI();
     const { user, logout } = useAuth();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const dropdownRef = useRef(null);
+    const mobileMenuRef = useRef(null);
 
     const isActive = (path) => location.pathname === path ? 'active' : '';
 
@@ -18,14 +20,21 @@ const Navbar = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setIsDropdownOpen(false);
             }
+            if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target) && !event.target.closest('.hamburger-menu')) {
+                setIsMobileMenuOpen(false);
+            }
         };
 
-        if (isDropdownOpen) {
+        if (isDropdownOpen || isMobileMenuOpen) {
             document.addEventListener('mousedown', handleClickOutside);
         } else {
             document.removeEventListener('mousedown', handleClickOutside);
@@ -34,7 +43,16 @@ const Navbar = () => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [isDropdownOpen]);
+    }, [isDropdownOpen, isMobileMenuOpen]);
+
+    const handleUploadClick = () => {
+        if (user && user.bannedState && (!user.banUntil || new Date(user.banUntil) > new Date())) {
+            alert(`YOU ARE IN TIMEOUT. REASON: ${user.bannedReason || 'UNSPECIFIED'}. RELEASE AT: ${user.banUntil ? new Date(user.banUntil).toLocaleString() : 'THE END OF TIME'}`);
+            return;
+        }
+        openUploadModal();
+        setIsMobileMenuOpen(false);
+    };
 
     return (
         <header className="header">
@@ -43,70 +61,41 @@ const Navbar = () => {
                     ASTAROTH'S SECRET
                 </h2>
             </div>
-            <nav className="nav-bar">
-                <Link to="/" className={`press ${isActive('/')}`}>Home</Link>
-                <Link to="/gallery" className={`press ${isActive('/gallery')}`}>Gallery</Link>
+
+            <button className={`hamburger-menu ${isMobileMenuOpen ? 'active' : ''}`} onClick={toggleMobileMenu}>
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav className={`nav-bar ${isMobileMenuOpen ? 'mobile-show' : ''}`} ref={mobileMenuRef}>
+                <Link to="/" className={`press ${isActive('/')}`} onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+                <Link to="/gallery" className={`press ${isActive('/gallery')}`} onClick={() => setIsMobileMenuOpen(false)}>Gallery</Link>
                 <span
-                    className="press"
-                    onClick={() => {
-                        if (user && user.bannedState && (!user.banUntil || new Date(user.banUntil) > new Date())) {
-                            alert(`YOU ARE IN TIMEOUT. REASON: ${user.bannedReason || 'UNSPECIFIED'}. RELEASE AT: ${user.banUntil ? new Date(user.banUntil).toLocaleString() : 'THE END OF TIME'}`);
-                            return;
-                        }
-                        openUploadModal();
-                    }}
-                    style={{
-                        cursor: 'pointer',
-                        marginLeft: '30px',
-                        fontFamily: 'var(--font-header)',
-                        textTransform: 'uppercase',
-                        fontSize: '0.85rem',
-                        letterSpacing: '1.5px',
-                        color: user && user.bannedState && (!user.banUntil || new Date(user.banUntil) > new Date()) ? 'var(--accent-burgundy)' : 'var(--text-dim)',
-                        opacity: user && user.bannedState && (!user.banUntil || new Date(user.banUntil) > new Date()) ? 0.5 : 1
-                    }}
-                    onMouseOver={(e) => {
-                        if (!(user && user.bannedState && (!user.banUntil || new Date(user.banUntil) > new Date()))) {
-                            e.target.style.color = 'var(--accent-gold)';
-                        }
-                    }}
-                    onMouseOut={(e) => {
-                        if (!(user && user.bannedState && (!user.banUntil || new Date(user.banUntil) > new Date()))) {
-                            e.target.style.color = 'var(--text-dim)';
-                        }
-                    }}
+                    className={`press upload-nav-btn ${user && user.bannedState && (!user.banUntil || new Date(user.banUntil) > new Date()) ? 'banned' : ''}`}
+                    onClick={handleUploadClick}
                 >
                     Upload
                 </span>
 
-                <div style={{ marginLeft: '40px', display: 'inline-flex', alignItems: 'center', gap: '20px' }}>
+                <div className="nav-auth-section">
                     {user ? (
-                        <div style={{ position: 'relative', display: 'inline-block' }} className="user-menu-wrapper">
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                        <div className="user-menu-wrapper">
+                            <div className="user-menu-content">
                                 {user.isAdmin && (
-                                    <Link to="/admin" className="cyber-btn" style={{
-                                        background: 'var(--accent-gold)',
-                                        color: '#fff',
-                                        border: '1px solid var(--accent-gold)',
-                                        fontSize: '0.7rem',
-                                        padding: '6px 12px',
-                                        textDecoration: 'none',
-                                        boxShadow: '0 0 10px rgba(184, 134, 11, 0.2)',
-                                        borderRadius: '4px'
-                                    }}>
+                                    <Link to="/admin" className="admin-btn" onClick={() => setIsMobileMenuOpen(false)}>
                                         ARCHIVE ADMIN
                                     </Link>
                                 )}
                                 <div
                                     className="profile-trigger"
-                                    style={{ cursor: 'pointer', position: 'relative' }}
                                     ref={dropdownRef}
                                     onClick={toggleDropdown}
                                 >
                                     <img
                                         src={user.profilePic ? (user.profilePic.startsWith('http') ? user.profilePic : `${API_URL}${user.profilePic}`) : 'https://via.placeholder.com/30'}
                                         alt="profile"
-                                        style={{ width: '35px', height: '35px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--accent-gold)', display: 'block' }}
+                                        className="navbar-profile-pic"
                                     />
 
                                     <div className={`user-dropdown-menu ${isDropdownOpen ? 'show' : ''}`} onClick={(e) => e.stopPropagation()}>
@@ -115,8 +104,8 @@ const Navbar = () => {
                                             SERIAL ID: <span>{user.serialNumber || '000000000000'}</span>
                                         </p>
                                         <hr className="dropdown-divider" />
-                                        <Link to="/profile" className="dropdown-link" onClick={() => setIsDropdownOpen(false)}>MY ACCOUNT</Link>
-                                        <button onClick={() => { logout(); setIsDropdownOpen(false); }} className="logout-btn">
+                                        <Link to="/profile" className="dropdown-link" onClick={() => { setIsDropdownOpen(false); setIsMobileMenuOpen(false); }}>MY ACCOUNT</Link>
+                                        <button onClick={() => { logout(); setIsDropdownOpen(false); setIsMobileMenuOpen(false); }} className="logout-btn">
                                             LOGOUT
                                         </button>
                                     </div>
@@ -124,19 +113,9 @@ const Navbar = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="press" onClick={() => openAuthModal('login')} style={{
-                            cursor: 'pointer',
-                            fontSize: '0.85rem',
-                            padding: '10px 20px',
-                            color: '#fff',
-                            background: 'var(--accent-gold)',
-                            border: 'none',
-                            borderRadius: '4px',
-                            fontFamily: 'var(--font-header)',
-                            boxShadow: '0 2px 8px rgba(197, 160, 89, 0.3)'
-                        }}>
+                        <button className="signin-btn" onClick={() => { openAuthModal('login'); setIsMobileMenuOpen(false); }}>
                             SIGN IN
-                        </div>
+                        </button>
                     )}
                 </div>
             </nav>

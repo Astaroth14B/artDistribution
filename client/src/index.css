@@ -99,8 +99,189 @@ button {
 
 .nav-bar a:hover,
 .nav-bar a.active,
-.nav-bar .press:hover {
+.nav-bar .press:hover:not(.banned) {
     color: var(--accent-gold);
+}
+
+.upload-nav-btn {
+    cursor: pointer;
+    margin-left: 30px;
+    font-family: var(--font-header);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    transition: 0.3s;
+}
+
+.upload-nav-btn.banned {
+    color: var(--accent-burgundy) !important;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.nav-auth-section {
+    margin-left: 40px;
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.user-menu-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.navbar-profile-pic {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-gold);
+    display: block;
+    cursor: pointer;
+}
+
+.signin-btn {
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 10px 20px;
+    color: #fff;
+    background: var(--accent-gold);
+    border: none;
+    border-radius: 4px;
+    font-family: var(--font-header);
+    box-shadow: 0 2px 8px rgba(197, 160, 89, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.signin-btn:hover {
+    background: var(--text-sepia);
+    transform: translateY(-2px);
+}
+
+.admin-btn {
+    background: var(--accent-gold);
+    color: #fff;
+    border: 1px solid var(--accent-gold);
+    font-size: 0.7rem;
+    padding: 6px 12px;
+    text-decoration: none;
+    box-shadow: 0 0 10px rgba(184, 134, 11, 0.2);
+    border-radius: 4px;
+    font-family: var(--font-header);
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+.admin-btn:hover {
+    background: transparent;
+    color: var(--accent-gold);
+}
+
+/* Hamburger Menu Icon */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 25px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1002;
+}
+
+.hamburger-menu span {
+    width: 30px;
+    height: 2px;
+    background: var(--accent-gold);
+    border-radius: 10px;
+    transition: all 0.3s linear;
+    position: relative;
+    transform-origin: 1px;
+}
+
+.hamburger-menu.active span:nth-child(1) {
+    transform: rotate(45deg);
+}
+
+.hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.active span:nth-child(3) {
+    transform: rotate(-45deg);
+}
+
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: flex;
+    }
+
+    .nav-bar {
+        position: fixed;
+        top: var(--nav-height);
+        right: -100%;
+        width: 100%;
+        height: calc(100vh - var(--nav-height));
+        background: var(--bg-parchment);
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 40px 0;
+        transition: 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        z-index: 1001;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+        border-left: 1px solid var(--accent-gold);
+        overflow-y: auto;
+    }
+
+    .nav-bar.mobile-show {
+        right: 0;
+    }
+
+    .nav-bar a,
+    .nav-bar .press {
+        margin: 15px 0 !important;
+        font-size: 1.1rem !important;
+        width: 100%;
+        text-align: center;
+        padding: 15px 0;
+        border-bottom: 1px solid rgba(197, 160, 89, 0.1);
+    }
+
+    .nav-auth-section {
+        margin-left: 0;
+        margin-top: 20px;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .user-menu-content {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .signin-btn,
+    .admin-btn {
+        width: 80%;
+        max-width: 250px;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .user-dropdown-menu {
+        position: static;
+        width: 90%;
+        margin: 20px auto;
+        box-shadow: none;
+        border: 1px solid rgba(197, 160, 89, 0.2);
+    }
 }
 
 /* Home Section - Book Turning */
