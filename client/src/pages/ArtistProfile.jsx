@@ -120,14 +120,14 @@ const ArtistProfile = () => {
 
             {/* Reuse the split-view modal logic if needed, or simplified version */}
             {selectedImg && (
-                <div className="modal show" onClick={(e) => e.target.className === 'modal show' && setSelectedImg(null)}>
+                <div className="modal show" onClick={(e) => e.target.className === 'modal show' && setSelectedImg(null)} role="dialog" aria-modal="true" aria-labelledby="artist-modal-title">
                     <div className="modalContent split-view" onClick={(e) => e.stopPropagation()}>
                         <div className="modal-left">
                             <img src={selectedImg.imageUrl} alt={selectedImg.title} className="art-preview-main" />
                         </div>
                         <div className="modal-right">
                             <div className="art-info">
-                                <h3>{selectedImg.title}</h3>
+                                <h3 id="artist-modal-title">{selectedImg.title}</h3>
                                 <p className="art-desc">{selectedImg.description || "No description provided."}</p>
                                 <button
                                     onClick={async () => {

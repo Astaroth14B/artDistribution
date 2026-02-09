@@ -8,6 +8,7 @@ import Gallery from './pages/Gallery';
 import Profile from './pages/Profile';
 import ArtistProfile from './pages/ArtistProfile';
 import AdminDashboard from './pages/AdminDashboard';
+import Login from './pages/Login';
 import UploadModal from './components/UploadModal';
 import AuthModal from './components/AuthModal';
 
@@ -23,6 +24,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/gallery" element={<Gallery />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/profile/:serialNumber" element={<ArtistProfile />} />
                 <Route path="/admin" element={<AdminDashboard />} />

@@ -113,14 +113,14 @@ const AuthModal = () => {
     if (!isAuthModalOpen) return null;
 
     return (
-        <div className="modal" style={{ display: 'flex' }} onClick={(e) => e.target.className === 'modal' && closeAuthModal()}>
+        <div className="modal" style={{ display: 'flex' }} onClick={(e) => e.target.className === 'modal' && closeAuthModal()} role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
             <div className="contact-content" style={{ position: 'relative', zIndex: 2001, width: '100%', maxWidth: '450px' }}>
                 <div className="cyber-form" style={{ width: '100%', boxSizing: 'border-box' }}>
-                    <button onClick={closeAuthModal} style={{ position: 'absolute', top: '15px', right: '20px', background: 'transparent', border: 'none', color: 'var(--text-sepia)', fontSize: '1.5rem', cursor: 'pointer' }}>&times;</button>
+                    <button onClick={closeAuthModal} style={{ position: 'absolute', top: '15px', right: '20px', background: 'transparent', border: 'none', color: 'var(--text-sepia)', fontSize: '1.5rem', cursor: 'pointer' }} aria-label="Close Modal">&times;</button>
 
                     {authView === 'login' ? (
                         <>
-                            <h3>SYSTEM <span className="highlight">ACCESS</span></h3>
+                            <h3 id="auth-modal-title">SYSTEM <span className="highlight">ACCESS</span></h3>
                             <p style={{ textAlign: 'center', marginBottom: '25px', fontFamily: 'var(--font-alt)' }}>Enter the Secret Archive.</p>
                             {loginError && <p style={{ color: loginError.includes('ACTIVATED') || loginError.includes('SUCCESS') ? 'green' : 'red', textAlign: 'center', fontSize: '0.9rem' }}>{loginError}</p>}
                             <form onSubmit={handleLoginSubmit}>

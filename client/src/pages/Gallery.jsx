@@ -177,7 +177,7 @@ const Gallery = () => {
 
             {/* Gallery Modal */}
             {selectedImg && (
-                <div className="modal show" onClick={(e) => e.target.className === 'modal show' && setSelectedImg(null)}>
+                <div className="modal show" onClick={(e) => e.target.className === 'modal show' && setSelectedImg(null)} role="dialog" aria-modal="true" aria-labelledby="gallery-modal-title">
                     <div className="modalContent split-view" onClick={(e) => e.stopPropagation()}>
 
                         <div className="modal-left">
@@ -203,7 +203,7 @@ const Gallery = () => {
                             </div>
 
                             <div className="art-info">
-                                <h3>{selectedImg.title}</h3>
+                                <h3 id="gallery-modal-title">{selectedImg.title}</h3>
                                 <p className="art-desc">{selectedImg.description || "No description provided."}</p>
 
                                 <button

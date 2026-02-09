@@ -55,7 +55,7 @@ const UploadModal = ({ onUploadSuccess }) => {
     if (!isUploadModalOpen) return null;
 
     return (
-        <div className="modal" style={{ display: 'flex' }} onClick={(e) => e.target.className === 'modal' && closeUploadModal()}>
+        <div className="modal" style={{ display: 'flex' }} onClick={(e) => e.target.className === 'modal' && closeUploadModal()} role="dialog" aria-modal="true" aria-labelledby="upload-modal-title">
             <div className="contact-content" style={{ position: 'relative', zIndex: 2001, width: '100%', maxWidth: '500px' }}>
                 <div className="cyber-form" style={{ width: '100%', boxSizing: 'border-box' }}>
                     <button
@@ -71,11 +71,12 @@ const UploadModal = ({ onUploadSuccess }) => {
                             cursor: 'pointer',
                             zIndex: 10
                         }}
+                        aria-label="Close Modal"
                     >
                         &times;
                     </button>
 
-                    <h3>CONTRIBUTE <span className="highlight">ART</span></h3>
+                    <h3 id="upload-modal-title">CONTRIBUTE <span className="highlight">ART</span></h3>
                     <p style={{ textAlign: 'center', marginBottom: '30px', fontFamily: 'var(--font-alt)' }}>Share your drawing with the world.</p>
 
                     {user && user.bannedState && (!user.banUntil || new Date(user.banUntil) > new Date()) ? (

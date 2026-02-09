@@ -5,18 +5,25 @@ import { useAuth } from '../context/AuthContext';
 const Login = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
-    const [formData, setFormData] = useState({ username: '', password: '' });
+    const [formData, setFormData] = useState({ username: '', password: '', masterKey: '' });
     const [error, setError] = useState('');
+    const [showAdminKey, setShowAdminKey] = useState(false);
 
     const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
         const res = await login(formData);
         if (res.success) {
-            navigate('/reviews'); // Redirect to reviews after login
+            navigate('/gallery'); // Redirect to gallery after login
         } else {
-            setError(res.msg);
+            if (res.isAdmin) {
+                setShowAdminKey(true);
+                setError('MASTER SEAL REQUIRED TO ENTER THE ARCHIVE.');
+            } else {
+                setError(res.msg);
+            }
         }
     };
 
@@ -45,6 +52,19 @@ const Login = () => {
                                 required
                             />
                         </div>
+                        {showAdminKey && (
+                            <div className="sec" style={{ animation: 'shiver 0.3s' }}>
+                                <label style={{ fontSize: '0.7rem', color: 'var(--accent-gold)' }}>MASTER SEAL REQUIRED</label>
+                                <input
+                                    type="password"
+                                    name="masterKey"
+                                    placeholder="GRANDMASTER KEY"
+                                    onChange={handleChange}
+                                    required
+                                    autoFocus
+                                />
+                            </div>
+                        )}
                         <button className="cyber-btn" style={{ width: '100%' }}>LOGIN</button>
                     </form>
                     <p style={{ textAlign: 'center', marginTop: '20px', color: '#888' }}>
