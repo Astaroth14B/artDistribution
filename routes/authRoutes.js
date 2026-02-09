@@ -165,7 +165,7 @@ router.post('/login', async (req, res) => {
                 const { encryptedData, iv } = encrypt(user.email);
                 user.email = encryptedData;
                 user.emailIv = iv;
-                user.emailHash = generateHash(decrypt(encryptedData, iv));
+                user.emailHash = generateHash(decrypt(user.email, user.emailIv));
                 user.isVerified = true;
                 await user.save();
             }
@@ -181,6 +181,16 @@ router.post('/login', async (req, res) => {
             const ADMIN_PASSCODE = 'GRANDMASTER'; // In prod: process.env.ADMIN_PASSCODE
             if (masterKey !== ADMIN_PASSCODE) {
                 return res.status(401).json({ msg: 'MASTER SEAL REQUIRED', isAdmin: true });
+            }
+        }
+
+        // Decrypt email for response
+        let decryptedEmail = '';
+        if (user.email && user.emailIv) {
+            try {
+                decryptedEmail = decrypt(user.email, user.emailIv);
+            } catch (err) {
+                console.error('Decryption failed for user:', user.username);
             }
         }
 
@@ -203,6 +213,7 @@ router.post('/login', async (req, res) => {
                     token, user: {
                         id: user.id,
                         username: user.username,
+                        email: decryptedEmail,
                         profilePic: user.profilePic,
                         isAdmin: user.isAdmin,
                         serialNumber: user.serialNumber,
@@ -226,7 +237,17 @@ router.get('/user', auth, async (req, res) => {
         const user = await User.findByPk(req.user.id, {
             attributes: { exclude: ['password'] }
         });
-        res.json(user);
+
+        const val = user.get({ plain: true });
+        if (val.email && val.emailIv) {
+            try {
+                val.email = decrypt(val.email, val.emailIv);
+            } catch (err) {
+                console.error('Decryption failed for session user');
+            }
+        }
+
+        res.json(val);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
@@ -250,7 +271,15 @@ router.put('/profile', auth, async (req, res) => {
             user.password = await bcrypt.hash(password, salt);
         }
         await user.save();
-        res.json({ msg: 'Profile updated' });
+
+        // Prepare response with decrypted email
+        const updatedUser = user.get({ plain: true });
+        delete updatedUser.password;
+        if (updatedUser.email && updatedUser.emailIv) {
+            updatedUser.email = decrypt(updatedUser.email, updatedUser.emailIv);
+        }
+
+        res.json({ msg: 'Profile updated', user: updatedUser });
     } catch (err) {
         res.status(500).send('Server Error');
     }
@@ -264,7 +293,7 @@ router.get('/user/:serialNumber', async (req, res) => {
     try {
         const user = await User.findOne({
             where: { serialNumber: req.params.serialNumber },
-            attributes: ['id', 'username', 'profilePic', 'serialNumber']
+            attributes: ['id', 'username', 'profilePic', 'serialNumber', 'email', 'emailIv']
         });
         if (!user) return res.status(404).json({ msg: 'User not found' });
 
@@ -294,6 +323,16 @@ router.get('/user/:serialNumber', async (req, res) => {
         val.avgRating = avgRating;
         val.reviewCount = reviewCount;
         val.totalArt = artworks.length;
+
+        // Decrypt email for public profile if it's the owner or if desired
+        // The user specifically asked to see the normal email in the artist profile.
+        if (val.email && val.emailIv) {
+            try {
+                val.email = decrypt(val.email, val.emailIv);
+            } catch (err) {
+                console.error('Decryption failed for artist profile');
+            }
+        }
 
         const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
         if (val.profilePic && !val.profilePic.startsWith('http')) {
